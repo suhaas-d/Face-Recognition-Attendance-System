@@ -7,7 +7,7 @@ import sys
 from django.contrib import messages
 from django.http import HttpResponse
 sys.path.append("/home/suhaas/learndj/projects/friday/upload")
-from brain import *
+from try2 import *
 # Create your views here.
 
 def index(request):

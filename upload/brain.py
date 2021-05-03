@@ -145,13 +145,14 @@ def get_attendance(class_name):
 		remember_key = ""
 		for keydb, valuedb in database_encodings.items():
 			diff = np.linalg.norm(value - valuedb)
+			print(key, keydb, diff)
 			if diff < min_diff:
 				min_diff = diff
 				remember_key = keydb
 		if min_diff<0.7 :
-			msg_dict[key] = remember_key+' is present in the class and the distance is '+ str(min_diff)
+			msg_dict[key] = remember_key+' is present in the class and the distance is '+ str(min_diff)+' cropped image is'+ key
 		else:
-			msg_dict[key] = key+' has not been identified as anyone present in the database, please check again and min dist is' + str(min_diff)
+			msg_dict[key] = key+' has not been identified as anyone present in the database, please check again and min dist is' + str(min_diff)+'with '+remember_key
 		'''for filename in os.listdir('./upload/images'):
 			fille_loc = './upload/images'+filename
 			os.remove(file_loc)'''

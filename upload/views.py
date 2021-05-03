@@ -7,7 +7,7 @@ import sys
 from django.contrib import messages
 from django.http import HttpResponse
 sys.path.append("/home/suhaas/learndj/projects/friday/upload")
-from brain import *
+from try2 import *
 
 # Create your views here.
 students_names_encodings = {}
@@ -23,7 +23,6 @@ def send(request):
         test_img = './media/'+uploaded_file.name
         global class_name
         class_name = uploaded_file.name[:-4]
-        crop_for_attendance(test_img, class_name)
         global msg_dict
         msg_dict = get_attendance(class_name)
         #os.remove(test_img)
@@ -34,8 +33,6 @@ def send(request):
 
 def download(request):
     if request.method=="POST":
-        diction = {}
-        diction = generate_encodings(class_name)
         print(class_name)
  
         return render(request, 'download.html', {'msgs' : msg_dict, 'name': class_name})
