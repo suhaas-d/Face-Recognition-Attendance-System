@@ -24,7 +24,7 @@ urlpatterns = [
     path('',include('attendance.urls')),
     path('admin/', admin.site.urls),
     path('upload/', include('upload.urls')),
-]
+] + static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
 
 if settings.DEBUG:
     urlpatterns == static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

@@ -6,7 +6,7 @@ from django.core.files.storage import FileSystemStorage
 import sys
 from django.contrib import messages
 from django.http import HttpResponse
-sys.path.append("/home/suhaas/learndj/projects/friday/upload")
+sys.path.append(r"C:\Users\suhas\projects_django\Friday\upload")
 from try2 import *
 # Create your views here.
 

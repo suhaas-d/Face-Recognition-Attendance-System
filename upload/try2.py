@@ -2,6 +2,8 @@ from keras_facenet import FaceNet
 import cv2
 embedder = FaceNet()
 from PIL import Image
+import pickle
+import numpy as np
 #detections = embedder.extract('test.jpg', threshold = 0.95)
 
 '''print(detections)
@@ -51,7 +53,7 @@ def show_recognised_faces(test_image, boxes, n):
         idx+=1
         cv2.rectangle(img,(x,y),(x+w,y+h),(50,205,50),20)
     #Exporting the result
-    cv2.imwrite("face_detected.png",img)
+    cv2.imwrite("upload/face_detected.png",img)
     print("succesfully saved cropped images from uploaded photo")
 
 def get_attendance(test_image, class_name):
@@ -86,7 +88,7 @@ def get_attendance(test_image, class_name):
             if diff < min_diff:
                 min_diff = diff
                 remember_key = keydb
-        if min_diff < 0.7:
+        if min_diff < 0.8:
             msg_dict[key] = remember_key+' is present in the class and the distance is '+ str(min_diff)+' cropped image is'+ key
         else:
             msg_dict[key] = key+' has not been identified as anyone present in the database, please check again and min dist is' + str(min_diff)+'with '+remember_key

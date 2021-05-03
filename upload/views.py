@@ -24,7 +24,7 @@ def send(request):
         global class_name
         class_name = uploaded_file.name[:-4]
         global msg_dict
-        msg_dict = get_attendance(class_name)
+        msg_dict = get_attendance(test_img, class_name)
         #os.remove(test_img)
         return redirect(download)
     else:
