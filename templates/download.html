@@ -28,30 +28,24 @@
 </head>
 
 <body>
-    <form id="upload" method="POST" action="send" enctype="multipart/form-data" >
+    <form id="download" method="POST" action="download" enctype="multipart/form-data" >
         {% csrf_token %}
         <div class="page-wrapper bg-gra-02 p-t-130 p-b-100 font-poppins">
             <div class="wrapper wrapper--w680">
                 <div class="card card-4">
                     <div class="card-body">
-                        <h2 class="title">Upload Image</h2>
+                        <h2 class="title">Class : {{name}}</h2>
                         <div>    
-                            {% for message in messages %}
-                                <h5 style = "color: red; text-align:center; padding: 20px " >*{{message}}*</h5>
+                             <h5 style = "font-size: 20px; color:#525252">Students present in your class are :</h5>
+                            {% for key,value in msgs.items %}
+                                <p style="text-align: center; font-size: 15px; color:#525252">     {{value}}</p>
                             {% endfor %}
                         </div>
-                        <form method="POST">
-                            <div class="p-t-15" >
-                                        Drop Here
-                            
-                                        <a>Browse</a>
-                                        <input type="file" name="upl">
-                                    
-                            </div>  
+                        
                             
 
                             <div class="p-t-15">
-                                <button class="btn btn--radius-2 btn--blue" type="submit">Submit</button>
+                                <button class="btn btn--radius-2 btn--blue" type="submit">Get student names</button>
                             </div>
                         </form>
                     </div>

@@ -1,4 +1,5 @@
 import pickle
-with open('student_name_encodings.pkl','rb') as stupickle:
+with open('avengers.pickl','rb') as stupickle:
 	dic = pickle.load(stupickle)
-print(dic)
+for i,v in dic.items():
+	print(v)

@@ -26,7 +26,7 @@ import pickle
 face_cascade = cv2.CascadeClassifier('./upload/haarcascade_frontalface_default.xml')
 
 
-def crop_faces_first():	
+def crop_faces_test():	
 	img = cv2.imread('test.jpg')
 	im = Image.open(r"./upload/test.jpg")
 	#detect faces
@@ -46,15 +46,15 @@ def crop_faces_first():
 	print("succesfully saved reference images")
 
 
-def crop_faces_test(test_img):	
+def crop_faces_first(test_img, class_name):	
 	img = cv2.imread(test_img)
 	im = Image.open(r""+test_img)
 	#detect faces
 	 
 	faces = face_cascade.detectMultiScale(img,1.3,4)
 	cropped_images = []
-	 #Draw Rectangles arpund the faces
-	idx = 0
+	 #Draw Rectangles around the faces
+	idx = 5
 	for (x,y,w,h) in faces:
 		idx +=1
 		cv2.rectangle(img,(x,y),(x+w,y+h),(50,205,50),20)
@@ -64,24 +64,100 @@ def crop_faces_test(test_img):
 	#Exporting the result
 	cv2.imwrite("face_detected.png",img)
 	print("succesfully saved test images")
-	
+	return class_name
+
+def generate_encodings(class_name):	
 	FRmodel = faceRecoModel(input_shape=(3, 96, 96))
 	print("Total Params:", FRmodel.count_params())
-
-	
 	FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
 	load_weights_from_FaceNet(FRmodel)
 	
-	students_name_encodings = {}
+	students_names_encodings = {}
 	
-	for filename in os.listdir('./upload/test_images'):
-		students_name_encodings[filename] = img_to_encoding("./upload/test_images/"+filename,FRmodel)
+	for filename in os.listdir('./upload/images'):
+		students_names_encodings[filename[:-4]] = img_to_encoding("./upload/images/"+filename,FRmodel)
 		print(filename+' encoding is stored. ')
-	with open('student_name_encodings.pkl','wb') as stupickle:
-		pickle.dump(students_name_encodings,stupickle)
-	return idx
+	'''with open(class_name+'.pickle','wb') as stupickle:
+		pickle.dump(students_names_encodings,stupickle)'''
+	return students_names_encodings
 
+def crop_for_attendance(test_img, class_name):
+	img = cv2.imread(test_img)
+	im = Image.open(r""+test_img)
+	#detect faces
+	 
+	faces = face_cascade.detectMultiScale(img,1.5,5)
+	cropped_images = []
+	 #Draw Rectangles around the faces
+	idx = 0
+	for (x,y,w,h) in faces:
+		idx +=1
+		cv2.rectangle(img,(x,y),(x+w,y+h),(50,205,50),20)
+		im1 = im.crop((x,y,x+w,y+h))
+		im1 = im1.resize((96,96))
+		im1.save('./upload/images/cropped_'+str(idx)+'.JPG')
+	#Exporting the result
+	cv2.imwrite("face_detected.png",img)
+	print("succesfully saved cropped images from uploaded photo")
 
+def generate_encodings_attendance(class_name):	
+	FRmodel = faceRecoModel(input_shape=(3, 96, 96))
+	print("Total Params:", FRmodel.count_params())
+	FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
+	load_weights_from_FaceNet(FRmodel)
+	
+	students_names_encodings = {}
+	
+	for filename in os.listdir('./upload/images'):
+		students_names_encodings[filename[:-4]] = img_to_encoding("./upload/images/"+filename,FRmodel)
+		print(filename+' encoding is stored. ')
+		#os.remove('./upload/images/'+filename)
+	with open(class_name+'.pickle','wb') as stupickle:
+		pickle.dump(students_names_encodings,stupickle)
+	return students_names_encodings
+
+def individual_encodings(file_names, class_name):
+	encoding_dict = {}
+	FRmodel = faceRecoModel(input_shape=(3, 96, 96))
+	print("Total Params:", FRmodel.count_params())
+	FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
+	load_weights_from_FaceNet(FRmodel)
+	for i in file_names:
+		encoding_dict[i[:-4]] = img_to_encoding('./media/'+i, FRmodel)
+		#os.remove('./media/'+i)
+	print('I am here')
+	print(encoding_dict)
+	pickle_file = class_name+'.pickle'
+	with open(pickle_file,'wb') as stupickle:
+		pickle.dump(encoding_dict,stupickle)
+	print('I am done here')
+
+def get_attendance(class_name):
+	encodings = {}
+	database_encodings = {}
+	msg_dict = {}
+	file_loc = ""
+	with open(class_name+'.pickle','rb') as stupickle:
+		database_encodings = pickle.load(stupickle)
+	encodings = generate_encodings(class_name)
+	for key, value in encodings.items():
+		min_diff = 100	
+		remember_key = ""
+		for keydb, valuedb in database_encodings.items():
+			diff = np.linalg.norm(value - valuedb)
+			if diff < min_diff:
+				min_diff = diff
+				remember_key = keydb
+		if min_diff<0.7 :
+			msg_dict[key] = remember_key+' is present in the class and the distance is '+ str(min_diff)
+		else:
+			msg_dict[key] = key+' has not been identified as anyone present in the database, please check again and min dist is' + str(min_diff)
+		'''for filename in os.listdir('./upload/images'):
+			fille_loc = './upload/images'+filename
+			os.remove(file_loc)'''
+	print(msg_dict)
+	return msg_dict
+		
 	
 
 def triplet_loss(y_true, y_pred, alpha = 0.2):
@@ -115,33 +191,7 @@ def triplet_loss(y_true, y_pred, alpha = 0.2):
     return loss
 
 
-def not_req():
-	FRmodel.compile(optimizer = 'adam', loss = triplet_loss, metrics = ['accuracy'])
-	load_weights_from_FaceNet(FRmodel)
 
-	database = {}
-	database["scarjo"] = img_to_encoding("images/scarjo.JPG",FRmodel)
-	database["downey"] = img_to_encoding("images/downey.JPG",FRmodel)
-	database["hemsworth"] = img_to_encoding("images/hemsworth.JPG",FRmodel)
-	database["evans"] = img_to_encoding("images/evans.JPG",FRmodel)
-	database["renner"] = img_to_encoding("images/renner.JPG",FRmodel)
-
-
-
-	test_img = "test.jpg"
-	no_of_faces_detected = crop_faces_test(test_img)
-	for i in range(1,no_of_faces_detected+1):
-		test_encoding = img_to_encoding("test_images/cropped_"+str(i)+".JPG",FRmodel)
-		min_dist = 100
-		for (name,encoding) in database.items():
-			dist = np.linalg.norm(test_encoding - encoding)
-			if dist<min_dist:
-				identity = name
-				min_dist = dist
-		if min_dist>0.7 :
-			print("not in database")
-		else:
-			print(str(identity)+" has been detected and the distance is "+str(min_dist)+"in image"+str(i))
 	
 			
 
