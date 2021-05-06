@@ -43,13 +43,20 @@
                             {% for key,value in msgs.items %}
                                 <p style="text-align: center; font-size: 15px; color:#525252">     {{value}}</p>
                             {% endfor %}
+                            
                         </div>
                         
                             
 
                             <div class="p-t-15">
                                 <button class="btn btn--radius-2 btn--blue" type="submit">Get student names</button>
+                                
                             </div>
+                            <div class="p-t-15">
+                                <a href="{% url 'download_excel' %}" class="btn btn--radius-2 btn--blue">Download Excel Sheet</a>
+                                
+                            </div>
+                            
                         </form>
                     </div>
                 </div>

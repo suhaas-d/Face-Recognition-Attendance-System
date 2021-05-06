@@ -3,5 +3,6 @@ from . import views
 
 urlpatterns = [
     path('send',views.send,name = 'send'),
-    path('download', views.download, name = 'download')
+    path('download', views.download, name = 'download'),
+    path('download_excel', views.download_excel, name='download_excel' )
 ]

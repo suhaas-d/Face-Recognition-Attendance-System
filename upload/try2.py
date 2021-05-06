@@ -5,7 +5,17 @@ from PIL import Image, ImageFont, ImageDraw
 import pickle
 import numpy as np
 import itertools
+import datetime
+from array import *
+
+
+now=datetime.datetime.now()
 #detections = embedder.extract('test.jpg', threshold = 0.95)
+
+
+
+
+
 
 '''print(detections)
 
@@ -74,6 +84,17 @@ def get_attendance(test_image, class_name):
     with open(class_name+'.pickle','rb') as stupickle:
         database_encodings = pickle.load(stupickle)
     
+    val=[[now.strftime("%x"),'','STUDENTS' ],[now.strftime("%X"),'', 'ATTENDANCE']]
+    r=3
+    c=0
+    for key in database_encodings.keys():
+        val[0].insert(r, key)
+        r+=1
+    for i in range(3, r):
+        val[1].insert(i, 'Absent')
+     
+    
+
     #****second computation Heavy element of the project****
     #****most computation Heavy part of the project****
     #crop and get encodings of faces present in uploaded class image
@@ -96,13 +117,21 @@ def get_attendance(test_image, class_name):
                 remember_key = keydb
         if min_diff < 0.8:
             msg_dict[key] = remember_key+' is present in the class and the distance is '+ str(min_diff)+' cropped image is'+ key
+            for i in range(1, r+1):
+                if val[0][i-1] == remember_key:
+                    val[1][i-1] = 'Present'
+                   
         else:
             msg_dict[key] = key+' has not been identified as anyone present in the database, please check again and min dist is' + str(min_diff)+'with '+remember_key
-
+        
         '''for filename in os.listdir('./upload/images'):
             fille_loc = './upload/images'+filename
             os.remove(file_loc)'''
         keys.append(key)
+    
+    
     print(msg_dict)
     show_recognised_faces(test_image, boxes, n, keys)
-    return msg_dict
+    return msg_dict, val
+
+
