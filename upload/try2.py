@@ -84,13 +84,13 @@ def get_attendance(test_image, class_name):
     with open(class_name+'.pickle','rb') as stupickle:
         database_encodings = pickle.load(stupickle)
     
-    val=[[now.strftime("%x"),'','STUDENTS' ],[now.strftime("%X"),'', 'ATTENDANCE']]
-    r=3
+    val=[['DATE: '+ now.strftime("%x"),'','','STUDENTS','' ],['TIME ' + now.strftime("%X"),'','', 'ATTENDANCE','']]
+    r=5
     c=0
     for key in database_encodings.keys():
         val[0].insert(r, key)
         r+=1
-    for i in range(3, r):
+    for i in range(5, r):
         val[1].insert(i, 'Absent')
      
     
