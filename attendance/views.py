@@ -7,7 +7,8 @@ import sys
 from django.contrib import messages
 from django.http import HttpResponse
 sys.path.append(r'C:\Users\jayan\django_projects\Friday\upload')
-from try2 import *
+from brain import *
+import os
 # Create your views here.
 
 def index(request):
@@ -61,7 +62,6 @@ def register2(request):
     if request.method == "POST":
         file_names = []
         images = request.FILES.getlist('images')
-        print(len(images))
         for afile in images:
             file_name = ""
             fs = FileSystemStorage()
@@ -71,7 +71,6 @@ def register2(request):
             file_name = afile.name
             file_names.append(file_name)
             
-        print(file_names)
         individual_encodings(file_names, username)   
         print('pickle file of students face encodings is saved')
         return redirect('index')

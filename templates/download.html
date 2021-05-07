@@ -36,12 +36,12 @@
                     <div class="card-body">
                         <h2 class="title">Class : {{name}}</h2>
                         <div>    
-                            <div>
+                           <!-- <div>
                                 <img src="face_detected.png" alt="Detected Faces">
-                            </div>
-                            <h5 style = "font-size: 20px; color:#525252">Students present in your class are :</h5>
-                            {% for key,value in msgs.items %}
-                                <p style="text-align: center; font-size: 15px; color:#525252">     {{value}}</p>
+                            </div>-->
+                            <h5 style = "font-size: 20px; color:#525252">Students Absent in your class are :</h5>
+                            {% for value in msgs %}
+                                <p style="text-align: center; font-size: 15px; color:#525252">  <strong>{{value}}</strong></p>
                             {% endfor %}
                             
                         </div>

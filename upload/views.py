@@ -7,14 +7,15 @@ import sys
 from django.contrib import messages
 from django.http import HttpResponse
 sys.path.append("/home/suhaas/learndj/projects/friday/upload")
-from try2 import *
+from brain import *
 import xlsxwriter
 import datetime
 import io
+import os
 # Create your views here.
 students_names_encodings = {}
 class_name = ""
-msg_dict = {}
+msgs = []
 val=[]
 def send(request):
     context = {}
@@ -26,10 +27,10 @@ def send(request):
         test_img = './media/'+uploaded_file.name
         global class_name
         class_name = uploaded_file.name[:-4]
-        global msg_dict
+        global msgs
         global val
-        msg_dict , val= get_attendance(test_img, class_name)
-        #os.remove(test_img)
+        msgs , val= get_attendance(test_img, class_name)
+        os.remove(test_img)
         return redirect(download)
     else:
         messages.info(request, 'Upload the image as "your-classname/ same as your username".JPG')
@@ -37,9 +38,7 @@ def send(request):
 
 def download(request):
     if request.method=="POST":
-        print(class_name)
- 
-        return render(request, 'download.html', {'msgs' : msg_dict, 'name': class_name})
+        return render(request, 'download.html', {'msgs' : msgs, 'name': class_name})
     else:
         return render(request, 'download.html', {'name': class_name})
 
