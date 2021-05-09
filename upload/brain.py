@@ -16,6 +16,8 @@ now=datetime.datetime.now()
 
 folder = './media'
 for filename in os.listdir(folder):
+    if filename == 'detected':
+        continue
     file_path = os.path.join(folder, filename)
     try:
         if os.path.isfile(file_path) or os.path.islink(file_path):
@@ -52,7 +54,7 @@ def show_recognised_faces(test_image, boxes, n, keys):
         # draw.text((x, y),"Sample Text",(r,g,b))
         draw.text((x, y+h+20),key,(255, 255, 255),font=font)
     #Exporting the result
-    img.save('face_detected.jpg')
+    img.save('media/detected/face_detected.jpg')
     print("succesfully saved cropped images from uploaded photo")
 
 def get_attendance(test_image, class_name):

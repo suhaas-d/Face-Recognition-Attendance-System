@@ -12,6 +12,7 @@ import xlsxwriter
 import datetime
 import io
 import os
+from attendance.models import face_detected
 # Create your views here.
 students_names_encodings = {}
 class_name = ""
@@ -38,7 +39,8 @@ def send(request):
 
 def download(request):
     if request.method=="POST":
-        return render(request, 'download.html', {'msgs' : msgs, 'name': class_name})
+        pic = face_detected.objects.all()
+        return render(request, 'download.html', {'msgs' : msgs, 'name': class_name, 'pic' : pic})
     else:
         return render(request, 'download.html', {'name': class_name})
 

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import student
+from .models import face_detected
 
 # Register your models here.
-admin.site.register(student)
+admin.site.register(face_detected)
